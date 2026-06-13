@@ -1,0 +1,295 @@
+/* Global Styles - SimpleEMP Employee Management System */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;600&family=Outfit:wght@300;400;600&family=Quicksand:wght@300;400;600&family=Playfair+Display:wght@700&display=swap');
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  /* Dynamic Variables */
+  --primary: #6366f1;
+  --primary-dark: #4f46e5;
+  --primary-light: #818cf8;
+  --bg-dark: #0f172a;
+  --bg-card: #1e293b;
+  --bg-surface: #334155;
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --font-main: 'Inter', sans-serif;
+  --border: rgba(255, 255, 255, 0.1);
+  --shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+  --radius: 12px;
+
+  /* Static Variables */
+  --secondary: #0ea5e9;
+  --accent: #f59e0b;
+  --success: #10b981;
+  --danger: #ef4444;
+  --transition: all 0.3s ease;
+
+  font-family: var(--font-main);
+}
+
+html,
+body {
+  height: 100vh;
+  overflow: hidden;
+  background-color: var(--bg-dark);
+  color: var(--text-primary);
+  font-family: var(--font-main);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  outline: none;
+  font-family: inherit;
+  transition: all 0.3s ease;
+}
+
+/* Global Transition for Theme Switching */
+* {
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-dark); }
+::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
+
+/* Global Layout & Sidebar */
+app-header, app-foter { display: block; }
+app-header { grid-area: header; z-index: 1000; }
+.app-main { 
+  grid-area: main; 
+  flex: 1; 
+  display: flex; 
+  flex-direction: column; 
+  min-width: 0;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+}
+
+.content-wrapper { flex: 1; }
+
+.app-layout {
+  height: 100vh;
+  display: grid;
+  background: var(--bg-dark);
+  grid-template-areas: "header" "main";
+  grid-template-rows: auto 1fr;
+  grid-template-columns: 1fr;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (min-width: 901px) {
+  body.layout-left .app-layout {
+    grid-template-areas: "header main";
+    grid-template-columns: var(--sidebar-width) 1fr;
+    grid-template-rows: 1fr;
+    transition: grid-template-columns 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  body.layout-right .app-layout {
+    grid-template-areas: "main header";
+    grid-template-columns: 1fr var(--sidebar-width);
+    grid-template-rows: 1fr;
+    transition: grid-template-columns 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Collapsed Grid States are now handled by variable, but we keep classes for visibility overrides */
+  
+  /* Sidebar Specific Header Styles */
+  body.layout-left .header, body.layout-right .header {
+    height: 100vh; 
+    width: var(--sidebar-width); 
+    border-bottom: none; 
+    position: sticky; 
+    top: 0;
+    background: var(--bg-card); /* Distinct background for sidebar */
+    box-shadow: 10px 0 30px rgba(0,0,0,0.2);
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+  }
+
+
+  body.layout-left.sidebar-collapsed .header,
+  body.layout-right.sidebar-collapsed .header {
+    width: 80px;
+  }
+
+
+  body.layout-right .header {
+    box-shadow: -10px 0 30px rgba(0,0,0,0.2);
+  }
+
+  body.layout-left .header { border-right: 1px solid var(--border); }
+  body.layout-right .header { border-left: 1px solid var(--border); }
+
+  body.layout-left .header-container, body.layout-right .header-container {
+    flex-direction: column; 
+    height: 100vh; 
+    width: 100%; 
+    max-width: none !important;
+    padding: 2rem 1rem !important; 
+    align-items: stretch !important;
+    gap: 0 !important; /* Manage spacing individually for scroll area */
+  }
+
+  /* Logo Area in Sidebar (FIXED TOP) */
+  body.layout-left .header-logo, body.layout-right .header-logo {
+    justify-content: center;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 1.5rem;
+    flex-shrink: 0;
+    width: 100%;
+  }
+
+  /* Nav Links in Sidebar (SCROLLABLE MIDDLE) */
+  body.layout-left .header-nav, body.layout-right .header-nav {
+    display: flex !important; 
+    flex-direction: column; 
+    width: 100%; 
+    gap: 0.5rem;
+    flex: 1; /* Take available space */
+    overflow-y: auto; /* Enable scroll */
+    padding-right: 4px;
+    margin-bottom: 1.5rem;
+  }
+
+  /* Custom Scrollbar for Sidebar Nav */
+  body.layout-left .header-nav::-webkit-scrollbar,
+  body.layout-right .header-nav::-webkit-scrollbar {
+    width: 4px;
+  }
+  body.layout-left .header-nav::-webkit-scrollbar-thumb,
+  body.layout-right .header-nav::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 10px;
+  }
+
+  body.layout-left .nav-link, body.layout-right .nav-link {
+    padding: 0.875rem 1.25rem;
+    font-size: 0.95rem;
+    width: 100%;
+    border-radius: 12px;
+  }
+
+  /* Actions & Profile in Sidebar (FIXED BOTTOM) */
+  body.layout-left .header-actions, body.layout-right .header-actions {
+    display: flex !important; 
+    flex-direction: column; 
+    width: 100%; 
+    padding-top: 1.5rem; 
+    border-top: 1px solid var(--border); 
+    gap: 1.25rem;
+    flex-shrink: 0;
+  }
+
+  /* Hide User Profile and Divider in Sidebar as requested */
+  body.layout-left .user-profile, 
+  body.layout-right .user-profile,
+  body.layout-left .header-divider,
+  body.layout-right .header-divider {
+    display: none !important;
+  }
+
+
+
+
+  body.layout-left .action-btn, body.layout-right .action-btn {
+    width: 100% !important;
+    height: 46px !important;
+    justify-content: flex-start;
+    padding: 0 1rem;
+    gap: 0.75rem;
+  }
+
+  /* Inner Element Visibility for Collapsed Sidebar */
+  body.sidebar-collapsed .logo-text,
+  body.sidebar-collapsed .nav-link span,
+  body.sidebar-collapsed .user-info,
+  body.sidebar-collapsed .action-btn::after,
+  body.sidebar-collapsed .chevron {
+    display: none !important;
+  }
+
+  body.sidebar-collapsed .header-container {
+    padding: 2rem 0 !important;
+    align-items: center !important;
+  }
+
+  body.sidebar-collapsed .header-logo {
+    padding-bottom: 2rem;
+    border-bottom: none;
+    margin-bottom: 1.5rem;
+  }
+
+  body.sidebar-collapsed .header-nav {
+    padding-right: 0;
+    align-items: center;
+  }
+
+  body.sidebar-collapsed .nav-link {
+    padding: 0;
+    width: 46px;
+    height: 46px;
+    justify-content: center;
+  }
+
+  body.sidebar-collapsed .nav-link svg {
+    margin: 0;
+  }
+
+  body.sidebar-collapsed .header-actions {
+    align-items: center;
+    padding-top: 1.5rem;
+  }
+
+  body.sidebar-collapsed .action-btn {
+    width: 46px !important;
+    padding: 0;
+    justify-content: center;
+  }
+
+  body.sidebar-collapsed .user-profile {
+    width: 46px;
+    padding: 0 !important;
+    justify-content: center;
+    border: none !important;
+    background: transparent;
+  }
+
+
+
+body.layout-bottom .app-layout { 
+  grid-template-areas: "main" "header"; 
+  grid-template-rows: 1fr auto; 
+}
+body.layout-bottom .header { top: auto; bottom: 0; border-bottom: none; border-top: 1px solid var(--border); box-shadow: 0 -4px 32px rgba(0, 0, 0, 0.4); }
+body.layout-top .app-layout { 
+  grid-template-areas: "header" "main"; 
+  grid-template-rows: auto 1fr; 
+  grid-template-columns: 1fr; 
+}
+
+/* Resizing State Overrides */
+body.is-resizing .app-layout,
+body.is-resizing .header {
+  transition: none !important;
+}

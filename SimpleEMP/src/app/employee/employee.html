@@ -1,0 +1,112 @@
+<div class="employee-container">
+  <!-- Header & Search -->
+  <div class="header-row">
+    <div class="title-search">
+      <h2 class="section-title">Employees</h2>
+      <div class="search-box">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" [(ngModel)]="searchQuery" (input)="onSearch()" placeholder="Search by name or post..." class="search-input">
+      </div>
+    </div>
+    <button class="add-btn" (click)="toggleAddForm()">
+      {{ showAddForm ? 'Close Form' : '+ Add Employee' }}
+    </button>
+  </div>
+
+  <!-- Add/Edit Form -->
+  <div *ngIf="showAddForm" class="add-form-card">
+    <h3>{{ isEditing ? 'Update Employee' : 'Add New Employee' }}</h3>
+    <div class="form-grid">
+      <div class="form-group profile-upload">
+        <label>Profile Picture</label>
+        <div class="upload-container">
+          <img [src]="sanitizeImageUrl(activeEmp.profileImg)" class="preview-img" alt="Preview">
+          <div class="upload-btn-wrapper">
+            <button class="btn-upload">Choose Photo</button>
+            <input type="file" (change)="onFileSelected($event)" accept="image/*" />
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Name</label>
+        <input [(ngModel)]="activeEmp.name" placeholder="Full Name" class="form-input" />
+      </div>
+      <div class="form-group">
+        <label>Post / Position</label>
+        <input [(ngModel)]="activeEmp.post" placeholder="Software Engineer" class="form-input" />
+      </div>
+      <div class="form-group">
+        <label>Salary</label>
+        <input type="number" [(ngModel)]="activeEmp.salary" class="form-input" />
+      </div>
+      <div class="form-group">
+        <label>Gender</label>
+        <select [(ngModel)]="activeEmp.gnder" class="form-input">
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-actions">
+      <button (click)="saveEmployee()" class="submit-btn" [class.update]="isEditing" [disabled]="!activeEmp.name">
+        {{ isEditing ? 'Update Employee' : 'Create Employee' }}
+      </button>
+      <button (click)="cancel()" class="cancel-btn">Cancel</button>
+    </div>
+  </div>
+
+  <!-- Status States -->
+  <div *ngIf="loading" class="loading-state">
+    <div class="spinner"></div>
+    <span>Connecting to API...</span>
+  </div>
+
+  <div *ngIf="error" class="error-msg">
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    {{ error }}
+  </div>
+
+  <!-- Employee Table -->
+  <div class="table-wrapper" *ngIf="!loading && !error">
+    <table class="employee-table">
+      <thead>
+        <tr>
+          <th>User</th>
+          <th>Position</th>
+          <th>Department</th>
+          <th>Salary</th>
+          <th>Gender</th>
+          <th class="actions-col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let emp of filteredEmployees">
+          <td>
+            <div class="user-cell">
+              <img [src]="sanitizeImageUrl(emp.profileImg)" class="table-avatar" alt="">
+              <span class="emp-name">{{ emp.name }}</span>
+            </div>
+          </td>
+          <td><span class="badge position">{{ emp.post }}</span></td>
+          <td><span class="dept-text">General</span></td>
+          <td><span class="salary-text">${{ emp.salary | number }}</span></td>
+          <td>{{ emp.gnder }}</td>
+          <td class="actions-cell">
+            <button class="icon-btn edit" (click)="edit(emp)" title="Edit">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            </button>
+            <button class="icon-btn delete" (click)="delete(emp.id!)" title="Delete">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div *ngIf="!filteredEmployees.length" class="empty-state">
+      <div class="empty-icon">📂</div>
+      <p>No employees found matching your search.</p>
+    </div>
+  </div>
+</div>
